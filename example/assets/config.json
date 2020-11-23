@@ -1,0 +1,22 @@
+{
+	"message": {
+		"message_successful_payment": "El pago fue exitoso",
+		"message_unsuccessful_payment": "El pago no se realizó correctamente",
+		"progress_message_please_wait":  "Por favor espera…",
+		"progress_message_checkout_id": "Obteniendo el ID de Peter…",
+		"progress_message_checkout_info": "Obtener la información de pago…",
+		"progress_message_payment_status": "Obtener el estado del pago…",
+		"progress_message_processing_payment": "Procesando el pago…",
+		"error_message": "Error en el mensaje",
+		"error_empty_fields": "Campos Vacios"
+	},
+	"setting": {
+		"theme": "Light",
+		"theme_customize": "",
+		"storing_payment_data": "never",
+		"display_total_amount": false,
+		"skipping_cvv": "never",
+		"device_authentication": "never",
+		"language": "es"
+	}
+}

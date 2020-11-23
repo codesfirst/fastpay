@@ -1,0 +1,78 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.codesfirst.fastpay">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application
+        android:allowBackup="false"
+        android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:theme="@style/AppTheme">
+
+        <receiver
+            android:name=".receiver.CheckoutBroadcastReceiver"
+            android:exported="false" />
+
+        <service
+            android:name="com.oppwa.mobile.connect.service.ConnectService"
+            android:exported="false"
+            tools:ignore="MissingClass" />
+
+        <activity
+            android:name="com.oppwa.mobile.connect.checkout.dialog.CheckoutActivity"
+            tools:replace="android:theme"
+            android:theme="@style/Theme.Checkout.Dark"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false"
+            android:launchMode="singleTop"/>
+
+
+        <activity
+            android:name=".activity.CheckoutUIActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <data android:scheme="@string/checkout_ui_callback_scheme"/>
+
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".activity.PaymentButtonActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <data android:scheme="@string/payment_button_callback_scheme"/>
+
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".activity.CustomUIActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <data android:scheme="@string/custom_ui_callback_scheme"/>
+
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

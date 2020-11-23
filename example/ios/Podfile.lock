@@ -1,0 +1,22 @@
+PODS:
+  - fastpay (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - fastpay (from `.symlinks/plugins/fastpay/ios`)
+  - Flutter (from `.symlinks/flutter/ios`)
+
+EXTERNAL SOURCES:
+  fastpay:
+    :path: ".symlinks/plugins/fastpay/ios"
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+
+SPEC CHECKSUMS:
+  fastpay: bb534e459331379ea5096a96d0c092d83e342170
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+
+PODFILE CHECKSUM: 0abd85acd836b7efb6bd99630c7de74ed05fe5d4
+
+COCOAPODS: 1.10.0
