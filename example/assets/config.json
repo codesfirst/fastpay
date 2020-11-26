@@ -13,10 +13,12 @@
 	"setting": {
 		"theme": "Light",
 		"theme_customize": "",
-		"storing_payment_data": "never",
-		"display_total_amount": false,
+		"storing_payment_data": "prompt",
+		"display_total_amount": true,
 		"skipping_cvv": "never",
 		"device_authentication": "never",
-		"language": "es"
+		"language": "es",
+		"display_installment": true,
+		"arr_display_installment": [1,2,3]
 	}
 }

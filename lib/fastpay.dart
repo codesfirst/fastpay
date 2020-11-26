@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'package:fastpay/Configure.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/services.dart';
 
@@ -12,12 +13,12 @@ class Fastpay {
     return version;
   }
 
-  static Future<String>  checkoutActitvity(String amt) async {
+  static Future<String>  checkoutActitvity(String amt, String urlCheckout, String urlPayment,[String config]) async {
     var data ="";
     try {
       data = await rootBundle.loadString('assets/config.json');
     }catch(e){print(e);}
-    final String version = await _channel.invokeMethod('checkoutActivity',{"amt":amt, "data": data});
+    final String version = await _channel.invokeMethod('checkoutActivity',{"amt":amt, "data": data, "config": config, "checkout": urlCheckout, "payment": urlPayment});
     return version;
   }
 }

@@ -1,5 +1,6 @@
 package com.codesfirst.fastpay;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
@@ -7,11 +8,18 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.codesfirst.fastpay.data.FlutterStatus;
 import com.google.android.gms.wallet.PaymentDataRequest;
 import com.google.android.gms.wallet.WalletConstants;
+import com.google.gson.Gson;
 import com.oppwa.mobile.connect.checkout.dialog.CheckoutActivity;
 import com.oppwa.mobile.connect.checkout.dialog.GooglePayHelper;
 import com.oppwa.mobile.connect.checkout.meta.CheckoutBrandDetectionType;
@@ -41,6 +49,8 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
     private float amount;
     private final PluginRegistry.Registrar registrar;
     private final ConfigJson configJson = new ConfigJson();
+    private Gson gson = new Gson();
+
     MethodChannel.Result result;
     /** Plugin registration. */
     private static final String STATE_RESOURCE_PATH = "STATE_RESOURCE_PATH";
@@ -152,15 +162,37 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         if (call.method.equals("checkoutActivity")) {
-
             this.result=result;
-
+            String tempData = "";
             amount = Float.parseFloat(call.argument("amt").toString());
             Constants.Config.AMOUNT=amount+"";
+
+            //Config
             String g = call.argument("data").toString();
             Log.d("peter", g);
             configJson.LoadJson(g);
-            requestCheckoutId(registrar.activity().getString(R.string.checkout_ui_callback_scheme));
+
+            //Config Json
+            tempData = call.argument("config");
+            if(!tempData.isEmpty() && tempData != null) configJson.LoadJson(tempData);
+
+            //Url
+            tempData = call.argument("checkout");
+            if(tempData.isEmpty() ||  tempData == null) {
+                FlutterStatus.Companion.setFlutterMessage("ERR","Error al procesar", "La url de checkout no puede contener valores nulos o vacios");
+                result.success(gson.toJson(FlutterStatus.flutterObject));
+            }
+            else {
+                Constants.URL_CHECKOUT = tempData;
+                tempData = call.argument("payment");
+                if(tempData.isEmpty() ||  tempData == null) {
+                    FlutterStatus.Companion.setFlutterMessage("ERR","Error al procesar", "La url de pagos no puede contener valores nulos o vacios");
+                    result.success(gson.toJson(FlutterStatus.flutterObject));
+                }else {
+                    Constants.URL_PAYMENT = tempData;
+                    requestCheckoutId(registrar.activity().getString(R.string.checkout_ui_callback_scheme));
+                }
+            }
         } else {
             result.notImplemented();
         }
@@ -213,7 +245,8 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
                     break;
                 case CheckoutActivity.RESULT_CANCELED:
                     hideProgressDialog();
-
+                    FlutterStatus.Companion.setFlutterMessage("ERR","Transaccion Cancelada");
+                    this.result.success(gson.toJson(FlutterStatus.flutterObject));
                     break;
                 case CheckoutActivity.RESULT_ERROR:
                     hideProgressDialog();
@@ -221,7 +254,9 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
                     PaymentError error = data.getParcelableExtra(
                             CheckoutActivity.CHECKOUT_RESULT_ERROR);
 
-                    showAlertDialog(error.getErrorMessage());
+                    FlutterStatus.Companion.setFlutterMessage("ERR","Error " + CheckoutActivity.RESULT_ERROR, error.getErrorMessage());
+                    this.result.success(gson.toJson(FlutterStatus.flutterObject));
+                    //showAlertDialog(error.getErrorMessage()); //Comentado Peter Herrera
             }
         }
 
@@ -232,7 +267,8 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
         hideProgressDialog();
 
         if (checkoutId == null) {
-            showAlertDialog(configJson.getPrefsConfig("error_message"));
+            //showAlertDialog(configJson.getPrefsConfig("error_message"));
+            this.result.success(gson.toJson(FlutterStatus.flutterObject));
         }
         else  if (checkoutId != null) {
             openCheckoutUI(checkoutId);
@@ -242,7 +278,6 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
 
     private void openCheckoutUI(String checkoutId) {
         CheckoutSettings checkoutSettings = createCheckoutSettings(checkoutId, registrar.activity().getString(R.string.checkout_ui_callback_scheme));
-
         if(configJson.getPrefsBoolValueConf("display_total_amount"))
             checkoutSettings.setTotalAmountRequired(true);
         checkoutSettings.setLocale(configJson.getLanguage(configJson.getPrefsConfig("language")));
@@ -262,6 +297,14 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
             checkoutSettings.setSkipCVVMode(CheckoutSkipCVVMode.ALWAYS);
 
         checkoutSettings.setBrandDetectionType(CheckoutBrandDetectionType.REGEX);
+
+        //Display installment options
+        if(configJson.getPrefsBoolValueConf("display_installment")){
+            checkoutSettings.setInstallmentEnabled(true);
+            Integer[] myPaymentsOptions = new Integer[configJson.arr_display_installment.size()];
+            myPaymentsOptions = configJson.arr_display_installment.toArray(myPaymentsOptions);
+            checkoutSettings.setInstallmentOptions(myPaymentsOptions);
+        }
         /* Set componentName if you want to receive callbacks from the checkout */
         ComponentName componentName = new ComponentName(
                 registrar.activity(). getPackageName(), CheckoutBroadcastReceiver.class.getName());
@@ -276,20 +319,22 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
     @Override
     public void onErrorOccurred() {
         hideProgressDialog();
-        showAlertDialog(configJson.getPrefsConfig("error_message"));
+        //showAlertDialog(configJson.getPrefsConfig("error_message")); //Comentado Peter Herrera
+        this.result.success(gson.toJson(FlutterStatus.flutterObject));
     }
 
     @Override
     public void onPaymentStatusReceived(String paymentStatus) {
         hideProgressDialog();
-
+        this.result.success(gson.toJson(FlutterStatus.flutterObject));
+        /* Comenatdo Peter Herrera
         if ("OK".equals(paymentStatus)) {
             showAlertDialog(configJson.getPrefsConfig("message_successful_payment"));
-
             return;
         }
 
         showAlertDialog(configJson.getPrefsConfig("message_unsuccessful_payment"));
+         */
     }
 
     protected void requestPaymentStatus(String resourcePath) {

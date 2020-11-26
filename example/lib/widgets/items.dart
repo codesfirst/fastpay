@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-double total=0.0;
+double totalImp = 0.00;
+double total0 = 0.00;
 
 class MyItemWidget extends StatefulWidget {
   final String title;
@@ -7,7 +8,8 @@ class MyItemWidget extends StatefulWidget {
   final double price;
   final bool isIva;
   final String img;
-  const MyItemWidget({Key key, this.title, this.subtitle, this.price, this.img ,this.isIva=false}) : super(key: key);
+  final bool isIvaCal;
+  const MyItemWidget({Key key, this.title, this.subtitle, this.price, this.img ,this.isIva=false, this.isIvaCal=false}) : super(key: key);
 
   @override
   _MyItemWidgetState createState() => _MyItemWidgetState();
@@ -40,9 +42,21 @@ class _MyItemWidgetState extends State<MyItemWidget> {
                   setState(() {
                     selected = value;
                     if(selected){
-                      if(widget.isIva) total += widget.price * 1.12; else total += widget.price;
+                      if(widget.isIva) {
+                        totalImp += widget.price;
+                      } else if(widget.isIvaCal){
+                        totalImp += (widget.price  / 1.12);
+                      }else {
+                        total0 += widget.price;
+                      }
                     }else {
-                      if(widget.isIva) total -= widget.price * 1.12; else total -= widget.price;
+                      if(widget.isIva) {
+                        totalImp -= widget.price;
+                      }else if(widget.isIvaCal){
+                        totalImp -= (widget.price  / 1.12);
+                      } else {
+                        total0 -= widget.price;
+                      }
                     }
                   });
                 })

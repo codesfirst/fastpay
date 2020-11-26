@@ -1,9 +1,12 @@
 package com.codesfirst.fastpay.data
-import android.util.Log
+import android.util.Patterns
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.pixplicity.easyprefs.library.Prefs
-import com.codesfirst.fastpay.R
+import java.net.MalformedURLException
+import java.net.URISyntaxException
+import java.net.URL
+
 object VarGlobal {
     var THEMELIGTH: String = "LIGHT"
     var THEMEDARK: String = "DARK"
@@ -23,12 +26,14 @@ data class Message(
 
 data class Settings(
         @SerializedName("theme") var theme: String = "Light",
-        @SerializedName("theme_customize") var  theme_customize: String? = "",
-        @SerializedName("storing_payment_data") var  storing_payment_data: String? = "prompt",
+        @SerializedName("theme_customize") var theme_customize: String? = "",
+        @SerializedName("storing_payment_data") var storing_payment_data: String? = "prompt",
         @SerializedName("display_total_amount") var display_total_amount: Boolean = false,
         @SerializedName("skipping_cvv") var skipping_cvv: String? = "never",
         @SerializedName("device_authentication") var device_authentication: String? = "never",
-        @SerializedName("language") var language: String? = "en"
+        @SerializedName("language") var language: String? = "en",
+        @SerializedName("display_installment") var display_installment: Boolean = false,
+        @SerializedName("arr_display_installment") var arr_display_installment: List<Int> = listOf(1,2,3)
 )
 
 data class Config(
@@ -37,7 +42,10 @@ data class Config(
 )
 
 class ConfigJson {
-    fun LoadJson(json:String?){
+
+    lateinit var arr_display_installment:List<Int>
+
+    fun LoadJson(json: String?){
         json?.let {
                 var dataJson = Config()
                 try {
@@ -53,6 +61,7 @@ class ConfigJson {
             setConfig(dataJson)
         }
     }
+    
 
     fun getPrefsConfig(key: String): String = Prefs.getString(key, "")
 
@@ -71,6 +80,8 @@ class ConfigJson {
         dataJson.setting.skipping_cvv?.let { PrefSingleton.setPrefs("skipping_cvv", it) }
         dataJson.setting.device_authentication?.let { PrefSingleton.setPrefs("device_authentication", it) }
         dataJson.setting.language?.let { PrefSingleton.setPrefs("language", it) }
+        dataJson.setting.display_installment.let { PrefSingleton.setPrefs("display_installment", it) }
+        arr_display_installment = dataJson.setting.arr_display_installment
 
         //Mensajes
         dataJson.message.message_successful_payment?.let { PrefSingleton.setPrefs("message_successful_payment", it) }
@@ -83,5 +94,40 @@ class ConfigJson {
         dataJson.message.progress_message_checkout_id?.let { PrefSingleton.setPrefs("progress_message_checkout_id", it) }
         dataJson.message.progress_message_payment_status?.let { PrefSingleton.setPrefs("progress_message_payment_status", it) }
         PrefSingleton.setPrefs("isLoad", true)
+    }
+
+    fun loadJsonClient(jsonClient: String?):Boolean{
+        jsonClient?.let {
+            try {
+                if(it.isNotEmpty()) {
+                    Checkout.checkoutObject = Gson().fromJson(it, CheckoutObject::class.java)
+                    return true
+                }
+            }catch (e: Exception){
+                print(e)
+            }
+        }
+        return false
+    }
+
+    fun validateUrl(url: String?):Boolean{
+        url?.let {
+            try {
+                URL(it).toURI()
+                return true
+            } catch (exception: URISyntaxException) {
+                return false
+            } catch (exception: MalformedURLException) {
+                return false
+            }
+        }
+        return false
+    }
+
+    fun validateUrlPatterns(url: String?):Boolean{
+        url?.let {
+            return Patterns.WEB_URL.matcher(it).matches()
+        }
+        return false
     }
 }

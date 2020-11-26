@@ -26,4 +26,5 @@ object PrefSingleton {
     {
         Prefs.putInt(key, value)
     }
+    
 }

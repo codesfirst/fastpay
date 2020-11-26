@@ -17,8 +17,13 @@ public class Constants {
 
             PAYMENT_BRANDS.add("VISA");
             PAYMENT_BRANDS.add("MASTER");
+            //PAYMENT_BRANDS.add("AMEX");
+            //PAYMENT_BRANDS.add("DINERS");
+            //PAYMENT_BRANDS.add("DISCOVER");
+            //PAYMENT_BRANDS.add("ALIA");
+            //PAYMENT_BRANDS.add("MAESTRO");
             //PAYMENT_BRANDS.add("PAYPAL");
-            PAYMENT_BRANDS.add("GOOGLEPAY");
+            //PAYMENT_BRANDS.add("GOOGLEPAY");
         }
 
         /* The default payment brand for payment button */
@@ -39,7 +44,16 @@ public class Constants {
 
     public static final int CONNECTION_TIMEOUT = 5000;
 
-    public static final String BASE_URL = "http://52.59.56.185";
+    public static final String BASE_URL = "https://msdk.firmasegura.com.ec";
     public static final String MERCHANT_ID = "ff80808138516ef4013852936ec200f2";
-    public static final String LOG_TAG = "msdk.demo";
+    public static final String LOG_TAG = "msdk.fastpay";
+    public static final String LOCALHOST = "127.0.0.1";
+    public static final String StringEmpty = "";
+    public static final String StringNull = null;
+    public static  String checkoutResponse = StringEmpty;
+    public static  String paymentResponse = StringEmpty;
+
+    public static String URL_CHECKOUT = StringEmpty;
+    public static String URL_PAYMENT = StringEmpty;
+    
 }
