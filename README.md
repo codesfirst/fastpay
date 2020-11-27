@@ -6,18 +6,19 @@ Integration plugin for open payment platforms for Android and iOS mobile devices
 Now the method receives 5 parameters:
 
 ```
-checkoutActitvity (String amt, String urlCheckout, String urlPayment, [String config])
+checkoutActitvity (String amt, String urlCheckout, String urlPayment, int type_payment ,[String config])
 ```
 * amt: Total amount of the transaction
 * urlCheckout: Connection url to make the checkout request request.
 * urlPayment: Connection url to verify the payment status.
+* type_payment: Type of payment, example: Current (0), deferred (2).
 * config: Optional parameter where the configuration can be sent in the same format as the config.json file.
 
 Below is an example of invocation of the checkoutActitvity method:
 
 
 ```
-Future openPaymentGateway(double base0, double baseImp, String name, String last_name, String email, String envio) async {
+Future openPaymentGateway(double base0, double baseImp, String name, String last_name, String email, String envio, int typePayment) async {
     double tax = baseImp * 0.12;
     double tl = base0+baseImp+tax;
     if(tl!=(base0+baseImp+tax)){
@@ -26,9 +27,15 @@ Future openPaymentGateway(double base0, double baseImp, String name, String last
     }
 
     Navigator.of(context).pop();
-    String urlC = 'https://msdk.firmasegura.com.ec/msdkApi/checkout?ClienteDocID=0986590076&ClientePNombre='+name+'&ClientePApellido='+last_name+'&ClienteEmail='+email+'&' +
+    String urlC;
+    if(tipo_pago == 2 || tipo_pago == 3)
+      urlC = 'https://url/msdkApi/checkout?ClienteDocID=0986590076&ClientePNombre='+name+'&ClientePApellido='+last_name+'&ClienteEmail='+email+'&' +
         'ClienteIP=197.72.41.140&EnvioDireccion='+envio+'&Valor_Base0='+total0.toStringAsFixed(2)+'&Valor_BaseImp='+totalImp.toStringAsFixed(2)+'&Valor_IVA='+tax.toStringAsFixed(2)+'&' +
-        'Valor_Total='+tl.toStringAsFixed(2)+'&Credito_Tipo=0&Credito_Meses=0';
+        'Valor_Total='+tl.toStringAsFixed(2)+'&Credito_Tipo='+tipo_pago.toString();
+    else
+      urlC = 'https://url/msdkApi/checkout?ClienteDocID=0986590076&ClientePNombre='+name+'&ClientePApellido='+last_name+'&ClienteEmail='+email+'&' +
+          'ClienteIP=197.72.41.140&EnvioDireccion='+envio+'&Valor_Base0='+total0.toStringAsFixed(2)+'&Valor_BaseImp='+totalImp.toStringAsFixed(2)+'&Valor_IVA='+tax.toStringAsFixed(2)+'&' +
+          'Valor_Total='+tl.toStringAsFixed(2)+'&Credito_Tipo='+tipo_pago.toString()+'&Credito_Meses=0';
     print(urlC);
 
     if(name.isEmpty || last_name.isEmpty){

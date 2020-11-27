@@ -32,8 +32,8 @@ data class Settings(
         @SerializedName("skipping_cvv") var skipping_cvv: String? = "never",
         @SerializedName("device_authentication") var device_authentication: String? = "never",
         @SerializedName("language") var language: String? = "en",
-        @SerializedName("display_installment") var display_installment: Boolean = false,
-        @SerializedName("arr_display_installment") var arr_display_installment: List<Int> = listOf(1,2,3)
+        @SerializedName("display_installment") var display_installment: List<Int> = listOf(),
+        @SerializedName("arr_display_installment") var arr_display_installment: List<Int> = listOf(3,6,9)
 )
 
 data class Config(
@@ -44,6 +44,7 @@ data class Config(
 class ConfigJson {
 
     lateinit var arr_display_installment:List<Int>
+    lateinit var display_installment:List<Int>
 
     fun LoadJson(json: String?){
         json?.let {
@@ -80,8 +81,9 @@ class ConfigJson {
         dataJson.setting.skipping_cvv?.let { PrefSingleton.setPrefs("skipping_cvv", it) }
         dataJson.setting.device_authentication?.let { PrefSingleton.setPrefs("device_authentication", it) }
         dataJson.setting.language?.let { PrefSingleton.setPrefs("language", it) }
-        dataJson.setting.display_installment.let { PrefSingleton.setPrefs("display_installment", it) }
-        arr_display_installment = dataJson.setting.arr_display_installment
+        dataJson.setting.display_installment.let { display_installment = it }
+        dataJson.setting.arr_display_installment.let { arr_display_installment = it }
+        //arr_display_installment = dataJson.setting.arr_display_installment
 
         //Mensajes
         dataJson.message.message_successful_payment?.let { PrefSingleton.setPrefs("message_successful_payment", it) }

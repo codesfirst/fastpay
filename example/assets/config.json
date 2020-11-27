@@ -3,7 +3,7 @@
 		"message_successful_payment": "El pago fue exitoso",
 		"message_unsuccessful_payment": "El pago no se realizó correctamente",
 		"progress_message_please_wait":  "Por favor espera…",
-		"progress_message_checkout_id": "Obteniendo el ID de Peter…",
+		"progress_message_checkout_id": "Obteniendo el ID…",
 		"progress_message_checkout_info": "Obtener la información de pago…",
 		"progress_message_payment_status": "Obtener el estado del pago…",
 		"progress_message_processing_payment": "Procesando el pago…",
@@ -18,7 +18,7 @@
 		"skipping_cvv": "never",
 		"device_authentication": "never",
 		"language": "es",
-		"display_installment": true,
-		"arr_display_installment": [1,2,3]
+		"display_installment": [2,3],
+		"arr_display_installment": [3,6,9]
 	}
 }

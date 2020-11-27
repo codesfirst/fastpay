@@ -13,12 +13,13 @@ class Fastpay {
     return version;
   }
 
-  static Future<String>  checkoutActitvity(String amt, String urlCheckout, String urlPayment,[String config]) async {
+
+  static Future<String>  checkoutActitvity(String amt, String urlCheckout, String urlPayment, int typePayment,[String config]) async {
     var data ="";
     try {
       data = await rootBundle.loadString('assets/config.json');
     }catch(e){print(e);}
-    final String version = await _channel.invokeMethod('checkoutActivity',{"amt":amt, "data": data, "config": config, "checkout": urlCheckout, "payment": urlPayment});
+    final String version = await _channel.invokeMethod('checkoutActivity',{"amt":amt, "data": data, "config": config, "checkout": urlCheckout, "payment": urlPayment, "type_payment": typePayment});
     return version;
   }
 }

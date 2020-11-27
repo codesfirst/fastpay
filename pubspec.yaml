@@ -1,6 +1,6 @@
 name: fastpay
 description: Integration plugin for open payment platforms for Android and iOS mobile devices.
-version: 0.0.1
+version: 0.1.2
 homepage: https://github.com/codesfirst/fastpay
 
 environment:

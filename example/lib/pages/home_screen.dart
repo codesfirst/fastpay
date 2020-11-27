@@ -1,7 +1,7 @@
 import 'package:fastpay/fastpay.dart';
-import 'package:fastpay_example/utils/Checkout.dart';
 import 'package:fastpay_example/utils/fastpay.dart';
 import 'package:fastpay_example/widgets/items.dart';
+import 'package:fastpay_example/widgets/type_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
@@ -19,12 +19,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final myControllerEmail = TextEditingController();
   final myControllerEnvio = TextEditingController();
 
+  //Radio Button
+  int group = 0;
+
+  int _selectedRadioIndex = 1;
+
+  //Animation
   AnimationController animCtrl2;
   Animation<double> animation2;
 
   bool showFirst = true;
   double price = 0.00;
   String result="";
+
+  int radioValue = -1;
+
+  void _handleRadioValueChanged(int value) {
+    setState(() {
+      radioValue = value;
+      print(radioValue);
+    });
+  }
 
 
   @override
@@ -121,96 +136,94 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         onPressed: ()  {
           if(total0 > 0 || totalImp > 0) {
             showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    contentPadding: EdgeInsets.only(left: 25, right: 25),
-                    title: Center(child: Text("Information")),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                    content: Container(
-
-                      width: 300,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            Positioned(
-                              right: -40.0,
-                              top: -40.0,
-                              child: InkResponse(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: CircleAvatar(
-                                  child: Icon(Icons.close),
-                                  backgroundColor: Colors.red,
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: SingleChildScrollView(
+                    child: Stack(
+                      overflow: Overflow.visible,
+                      children: <Widget>[
+                        Positioned(
+                          right: -40.0,
+                          top: -40.0,
+                          child: InkResponse(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: CircleAvatar(
+                              child: Icon(Icons.close),
+                              backgroundColor: Colors.red,
+                            ),
+                          ),
+                        ),
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text("Nombre")
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: TextFormField(controller: myControllerName, decoration: const InputDecoration(labelText: 'Nombre'),
+                                  keyboardType: TextInputType.text,),
+                              ),
+                              Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text("Apellido")
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: TextFormField(controller: myControllerApellido,decoration: const InputDecoration(labelText: 'Apellido'),
+                                  keyboardType: TextInputType.text,),
+                              ),
+                              Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text("Email")
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: TextFormField(controller: myControllerEmail,decoration: const InputDecoration(labelText: 'Email'),
+                                  keyboardType: TextInputType.emailAddress,),
+                              ),
+                              Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text("Direccion de envio")
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: TextFormField(controller: myControllerEnvio,decoration: const InputDecoration(labelText: 'Direccion'),
+                                  keyboardType: TextInputType.text,),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: new MyRadioWidget(
+                                    name: "Corriente",
+                                    index: 1
                                 ),
                               ),
-                            ),
-                            Form(
-                              key: _formKey,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text("Nombre")
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: TextFormField(controller: myControllerName, decoration: const InputDecoration(labelText: 'Name'),
-                                      keyboardType: TextInputType.text,),
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text("Apellido")
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: TextFormField(controller: myControllerApellido,decoration: const InputDecoration(labelText: 'Last Name'),
-                                      keyboardType: TextInputType.text,),
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text("Email")
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: TextFormField(controller: myControllerEmail,decoration: const InputDecoration(labelText: 'Email'),
-                                      keyboardType: TextInputType.emailAddress,),
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text("Direccion de envio")
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: TextFormField(controller: myControllerEnvio,decoration: const InputDecoration(labelText: 'Adress'),
-                                      keyboardType: TextInputType.text,),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: RaisedButton(
-                                      child: Text("Pagar"),
-                                      onPressed: () {
-                                        if (_formKey.currentState.validate()) {
-                                          _formKey.currentState.save();
-                                          openPaymentGateway(total0, totalImp, myControllerName.text, myControllerApellido.text, myControllerEmail.text, myControllerEnvio.text);
-                                        }
-                                      },
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: RaisedButton(
+                                  child: Text("Pagar"),
+                                  onPressed: () {
+                                    if (_formKey.currentState.validate()) {
+                                      _formKey.currentState.save();
+                                      openPaymentGateway(total0, totalImp, myControllerName.text, myControllerApellido.text, myControllerEmail.text, myControllerEnvio.text, tpayment);
+                                    }
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  );
-                }
-            );
+                  ),
+                );
+              });
           }else Toast.show("Elija un producto", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
         },
         child: Icon(Icons.shopping_cart, color: Colors.white),
@@ -218,81 +231,83 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Future openPaymentGateway(double base0, double baseImp, String name, String last_name, String email, String envio) async {
+  Future openPaymentGateway(double base0, double baseImp, String name, String last_name, String email, String envio, int tipo_pago) async {
     double tax = baseImp * 0.12;
     double tl = base0+baseImp+tax;
     if(tl!=(base0+baseImp+tax)){
       Toast.show("Montos no cuadran", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
       return;
     }
-
     Navigator.of(context).pop();
-    String urlC = 'https://msdk.firmasegura.com.ec/msdkApi/checkout?ClienteDocID=0986590076&ClientePNombre='+name+'&ClientePApellido='+last_name+'&ClienteEmail='+email+'&' +
+
+    if(tipo_pago < 0) {
+      Toast.show("Tipo de pago invalido", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
+      return;
+    }
+
+    String urlC;
+    if(tipo_pago == 2 || tipo_pago == 3)
+      urlC = 'https://msdk.firmasegura.com.ec/msdkApi/checkout?ClienteDocID=0986590076&ClientePNombre='+name+'&ClientePApellido='+last_name+'&ClienteEmail='+email+'&' +
         'ClienteIP=197.72.41.140&EnvioDireccion='+envio+'&Valor_Base0='+total0.toStringAsFixed(2)+'&Valor_BaseImp='+totalImp.toStringAsFixed(2)+'&Valor_IVA='+tax.toStringAsFixed(2)+'&' +
-        'Valor_Total='+tl.toStringAsFixed(2)+'&Credito_Tipo=0&Credito_Meses=0';
+        'Valor_Total='+tl.toStringAsFixed(2)+'&Credito_Tipo='+tipo_pago.toString();
+    else
+      urlC = 'https://msdk.firmasegura.com.ec/msdkApi/checkout?ClienteDocID=0986590076&ClientePNombre='+name+'&ClientePApellido='+last_name+'&ClienteEmail='+email+'&' +
+          'ClienteIP=197.72.41.140&EnvioDireccion='+envio+'&Valor_Base0='+total0.toStringAsFixed(2)+'&Valor_BaseImp='+totalImp.toStringAsFixed(2)+'&Valor_IVA='+tax.toStringAsFixed(2)+'&' +
+          'Valor_Total='+tl.toStringAsFixed(2)+'&Credito_Tipo='+tipo_pago.toString()+'&Credito_Meses=0';
     print(urlC);
 
     if(name.isEmpty || last_name.isEmpty){
       Toast.show("Campos vacios", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
       return;
     }
-    String tempResult=await Fastpay.checkoutActitvity(tl.toStringAsFixed(2), urlC, FastPay.urlPayment, FastPay.configData);
+    String tempResult=await Fastpay.checkoutActitvity(tl.toStringAsFixed(2), urlC, FastPay.urlPayment, tipo_pago, FastPay.configData);
     setState(()
     {
       result=tempResult;
       //Toast.show(result, context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
 
       showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              contentPadding: EdgeInsets.only(left: 25, right: 25),
-              title: Center(child: Text("Information")),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
-              content: Container(
-
-                width: 300,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Positioned(
-                        right: -40.0,
-                        top: -40.0,
-                        child: InkResponse(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: CircleAvatar(
-                            child: Icon(Icons.close),
-                            backgroundColor: Colors.red,
-                          ),
-                        ),
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: Stack(
+                overflow: Overflow.visible,
+                children: <Widget>[
+                  Positioned(
+                    right: -40.0,
+                    top: -40.0,
+                    child: InkResponse(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: CircleAvatar(
+                        child: Icon(Icons.close),
+                        backgroundColor: Colors.red,
                       ),
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text("JSON RECIBIDO")
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(result),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text("JSON RECIBIDO")
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(result),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            );
-          }
-      );
+            ),
+          );
+        });
     });
   }
 }

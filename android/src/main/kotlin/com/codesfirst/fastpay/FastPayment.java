@@ -164,13 +164,23 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
         if (call.method.equals("checkoutActivity")) {
             this.result=result;
             String tempData = "";
-            amount = Float.parseFloat(call.argument("amt").toString());
-            Constants.Config.AMOUNT=amount+"";
+
+            //amount = Float.parseFloat(call.argument("amt").toString());
+            //Constants.Config.AMOUNT=amount+"";
+
+            //Type Payment
+            try {
+                tempData = call.argument("type_payment").toString();
+                if(Integer.parseInt(tempData) >= 0)
+                    Constants.Config.TYPE_PAYMENT = Integer.parseInt(tempData);
+            }catch (Exception e){
+                Constants.Config.TYPE_PAYMENT = 0;
+            }
 
             //Config
-            String g = call.argument("data").toString();
-            Log.d("peter", g);
-            configJson.LoadJson(g);
+            tempData = call.argument("data").toString();
+            Log.d("peter", tempData);
+            configJson.LoadJson(tempData);
 
             //Config Json
             tempData = call.argument("config");
@@ -299,12 +309,15 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
         checkoutSettings.setBrandDetectionType(CheckoutBrandDetectionType.REGEX);
 
         //Display installment options
-        if(configJson.getPrefsBoolValueConf("display_installment")){
-            checkoutSettings.setInstallmentEnabled(true);
-            Integer[] myPaymentsOptions = new Integer[configJson.arr_display_installment.size()];
-            myPaymentsOptions = configJson.arr_display_installment.toArray(myPaymentsOptions);
-            checkoutSettings.setInstallmentOptions(myPaymentsOptions);
+        if(configJson.display_installment.size() > 0) {
+            if (configJson.display_installment.contains(Constants.Config.TYPE_PAYMENT)) {
+                checkoutSettings.setInstallmentEnabled(true);
+                Integer[] myPaymentsOptions = new Integer[configJson.arr_display_installment.size()];
+                myPaymentsOptions = configJson.arr_display_installment.toArray(myPaymentsOptions);
+                checkoutSettings.setInstallmentOptions(myPaymentsOptions);
+            }
         }
+
         /* Set componentName if you want to receive callbacks from the checkout */
         ComponentName componentName = new ComponentName(
                 registrar.activity(). getPackageName(), CheckoutBroadcastReceiver.class.getName());

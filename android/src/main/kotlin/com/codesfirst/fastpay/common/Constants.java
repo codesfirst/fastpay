@@ -31,6 +31,7 @@ public class Constants {
 
         /* The default amount and currency */
         public static        String AMOUNT = "49.99";
+        public static int TYPE_PAYMENT = 0;
         public static final String CURRENCY = "USD";
 
         /* The card info for SDK & Your Own UI*/

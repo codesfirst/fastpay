@@ -37,6 +37,7 @@ class _MyItemWidgetState extends State<MyItemWidget> {
             new Image(image: AssetImage("assets/images/"+widget.img)),
             new Text(widget.subtitle),
             new Checkbox(
+                activeColor: Colors.green,
                 value: selected,
                 onChanged: (value) {
                   setState(() {
@@ -66,3 +67,6 @@ class _MyItemWidgetState extends State<MyItemWidget> {
     );
   }
 }
+
+
+
