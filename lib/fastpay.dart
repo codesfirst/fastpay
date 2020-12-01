@@ -1,6 +1,6 @@
 
 import 'dart:async';
-import 'package:fastpay/Configure.dart';
+import 'package:fastpay/core/Configure.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/services.dart';
 

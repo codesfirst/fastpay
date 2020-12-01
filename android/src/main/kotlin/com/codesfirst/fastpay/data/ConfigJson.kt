@@ -1,11 +1,14 @@
 package com.codesfirst.fastpay.data
 import android.util.Patterns
+import com.codesfirst.fastpay.common.Constants
+import com.codesfirst.fastpay.common.Constants.Config.PAYMENT_BRANDS
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.pixplicity.easyprefs.library.Prefs
 import java.net.MalformedURLException
 import java.net.URISyntaxException
 import java.net.URL
+import java.util.*
 
 object VarGlobal {
     var THEMELIGTH: String = "LIGHT"
@@ -33,7 +36,9 @@ data class Settings(
         @SerializedName("device_authentication") var device_authentication: String? = "never",
         @SerializedName("language") var language: String? = "en",
         @SerializedName("display_installment") var display_installment: List<Int> = listOf(),
-        @SerializedName("arr_display_installment") var arr_display_installment: List<Int> = listOf(3,6,9)
+        @SerializedName("arr_display_installment") var arr_display_installment: List<Int> = listOf(3,6,9),
+        @SerializedName("mode_test") var mode_test: Boolean = true,
+        @SerializedName("arr_brand_payment") var arr_brand_payment: List<String> = listOf("VISA", "MASTER",  "AMEX",  "DINERS", "DISCOVER" )
 )
 
 data class Config(
@@ -45,6 +50,7 @@ class ConfigJson {
 
     lateinit var arr_display_installment:List<Int>
     lateinit var display_installment:List<Int>
+    lateinit var arr_brand_payment:List<String>
 
     fun LoadJson(json: String?){
         json?.let {
@@ -61,6 +67,14 @@ class ConfigJson {
             var dataJson = Config()
             setConfig(dataJson)
         }
+    }
+
+    fun LoadBrands(){
+        var BRANDS = LinkedHashSet<String>()
+        for (arr in arr_brand_payment)
+            BRANDS.add(arr)
+        if (BRANDS.count() > 0)
+            PAYMENT_BRANDS = BRANDS
     }
     
 
@@ -81,8 +95,10 @@ class ConfigJson {
         dataJson.setting.skipping_cvv?.let { PrefSingleton.setPrefs("skipping_cvv", it) }
         dataJson.setting.device_authentication?.let { PrefSingleton.setPrefs("device_authentication", it) }
         dataJson.setting.language?.let { PrefSingleton.setPrefs("language", it) }
-        dataJson.setting.display_installment.let { display_installment = it }
-        dataJson.setting.arr_display_installment.let { arr_display_installment = it }
+        dataJson.setting.display_installment?.let { display_installment = it }
+        dataJson.setting.arr_display_installment?.let { arr_display_installment = it }
+        dataJson.setting.arr_brand_payment?.let { arr_brand_payment = it }
+        dataJson.setting.mode_test?.let { PrefSingleton.setPrefs("mode_test",  it) }
         //arr_display_installment = dataJson.setting.arr_display_installment
 
         //Mensajes

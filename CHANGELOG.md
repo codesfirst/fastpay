@@ -9,3 +9,4 @@
 ## 0.1.2
 
 * The type of payment is added, and new configuration to activate the months terms.
+* Dynamic marks were added from the configuration file, additionally a parameter is added in the config.json file to activate or deactivate the test environment.

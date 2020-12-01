@@ -52,6 +52,13 @@ class _SplashScreenState extends State<SplashScreen> {
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 24.0),
+                      ),
+                      Text(
+                        FastPay.name_description,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24.0),
                       )
                     ],
                   ),

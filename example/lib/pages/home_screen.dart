@@ -19,6 +19,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final myControllerEmail = TextEditingController();
   final myControllerEnvio = TextEditingController();
 
+  //Focus
+  final _nameFocus = FocusNode();
+  final _lastNameFocus = FocusNode();
+  final _adressFocus = FocusNode();
+  final _emailFocus = FocusNode();
+
   //Radio Button
   int group = 0;
 
@@ -41,6 +47,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
+
+  _fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
+  }
 
   @override
   void initState() {
@@ -168,7 +179,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: TextFormField(controller: myControllerName, decoration: const InputDecoration(labelText: 'Nombre'),
-                                  keyboardType: TextInputType.text,),
+                                  keyboardType: TextInputType.text, focusNode: _nameFocus, onFieldSubmitted: (term){
+                                    _fieldFocusChange(context, _nameFocus, _lastNameFocus);
+                                  },
+                                ),
                               ),
                               Padding(
                                   padding: EdgeInsets.all(8.0),
@@ -177,7 +191,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: TextFormField(controller: myControllerApellido,decoration: const InputDecoration(labelText: 'Apellido'),
-                                  keyboardType: TextInputType.text,),
+                                  keyboardType: TextInputType.text, focusNode: _lastNameFocus, onFieldSubmitted: (term){
+                                  _fieldFocusChange(context, _lastNameFocus, _emailFocus);
+                                  },),
                               ),
                               Padding(
                                   padding: EdgeInsets.all(8.0),
@@ -186,7 +202,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: TextFormField(controller: myControllerEmail,decoration: const InputDecoration(labelText: 'Email'),
-                                  keyboardType: TextInputType.emailAddress,),
+                                  keyboardType: TextInputType.emailAddress, focusNode: _emailFocus, onFieldSubmitted: (term){
+                                    _fieldFocusChange(context, _emailFocus, _adressFocus);
+                                  },),
                               ),
                               Padding(
                                   padding: EdgeInsets.all(8.0),
@@ -195,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: TextFormField(controller: myControllerEnvio,decoration: const InputDecoration(labelText: 'Direccion'),
-                                  keyboardType: TextInputType.text,),
+                                  keyboardType: TextInputType.text, focusNode: _adressFocus,),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
@@ -247,11 +265,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     String urlC;
     if(tipo_pago == 2 || tipo_pago == 3)
-      urlC = 'https://msdk.firmasegura.com.ec/msdkApi/checkout?ClienteDocID=0986590076&ClientePNombre='+name+'&ClientePApellido='+last_name+'&ClienteEmail='+email+'&' +
+      urlC = 'https://msdkprod.firmasegura.com.ec/msdkApi/checkout?ClienteDocID=0986590076&ClientePNombre='+name+'&ClientePApellido='+last_name+'&ClienteEmail='+email+'&' +
         'ClienteIP=197.72.41.140&EnvioDireccion='+envio+'&Valor_Base0='+total0.toStringAsFixed(2)+'&Valor_BaseImp='+totalImp.toStringAsFixed(2)+'&Valor_IVA='+tax.toStringAsFixed(2)+'&' +
         'Valor_Total='+tl.toStringAsFixed(2)+'&Credito_Tipo='+tipo_pago.toString();
     else
-      urlC = 'https://msdk.firmasegura.com.ec/msdkApi/checkout?ClienteDocID=0986590076&ClientePNombre='+name+'&ClientePApellido='+last_name+'&ClienteEmail='+email+'&' +
+      urlC = 'https://msdkprod.firmasegura.com.ec/msdkApi/checkout?ClienteDocID=0986590076&ClientePNombre='+name+'&ClientePApellido='+last_name+'&ClienteEmail='+email+'&' +
           'ClienteIP=197.72.41.140&EnvioDireccion='+envio+'&Valor_Base0='+total0.toStringAsFixed(2)+'&Valor_BaseImp='+totalImp.toStringAsFixed(2)+'&Valor_IVA='+tax.toStringAsFixed(2)+'&' +
           'Valor_Total='+tl.toStringAsFixed(2)+'&Credito_Tipo='+tipo_pago.toString()+'&Credito_Meses=0';
     print(urlC);

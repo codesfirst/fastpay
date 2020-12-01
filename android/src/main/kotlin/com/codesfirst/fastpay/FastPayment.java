@@ -186,6 +186,9 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
             tempData = call.argument("config");
             if(!tempData.isEmpty() && tempData != null) configJson.LoadJson(tempData);
 
+            //Config Brands
+            try{configJson.LoadBrands();}catch (Exception e){}
+
             //Url
             tempData = call.argument("checkout");
             if(tempData.isEmpty() ||  tempData == null) {
@@ -355,8 +358,10 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
         new PaymentStatusRequestAsyncTask(this).execute(resourcePath);
     }
 
-
-
+    private Connect.ProviderMode ProviderMode(boolean mode){
+        if(mode) return Connect.ProviderMode.TEST;
+        else return Connect.ProviderMode.LIVE;
+    }
 
     /**
      * Creates the new instance of {@link CheckoutSettings}
@@ -367,7 +372,7 @@ public class FastPayment implements MethodChannel.MethodCallHandler, PluginRegis
      */
     protected CheckoutSettings createCheckoutSettings(String checkoutId, String callbackScheme) {
         return new CheckoutSettings(checkoutId, Constants.Config.PAYMENT_BRANDS,
-                Connect.ProviderMode.TEST)
+                ProviderMode(configJson.getPrefsBoolValueConf("mode_test")))
                 .setSkipCVVMode(CheckoutSkipCVVMode.FOR_STORED_CARDS)
                 .setWindowSecurityEnabled(false)
                 .setShopperResultUrl(callbackScheme + "://callback")

@@ -8,7 +8,7 @@
     <application
         android:hardwareAccelerated="true"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="fastpay_example"
+        android:label="DataWeb_app_demo"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

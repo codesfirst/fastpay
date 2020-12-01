@@ -11,14 +11,14 @@
 		"error_empty_fields": "Campos Vacios"
 	},
 	"setting": {
-		"theme": "Light",
-		"theme_customize": "",
 		"storing_payment_data": "prompt",
 		"display_total_amount": true,
 		"skipping_cvv": "never",
 		"device_authentication": "never",
 		"language": "es",
 		"display_installment": [2,3],
-		"arr_display_installment": [3,6,9]
+		"arr_display_installment": [3,6,9],
+		"mode_test": true,
+		"arr_brand_payment": ["VISA", "MASTER",  "AMEX",  "DINERS", "DISCOVER"]
 	}
 }

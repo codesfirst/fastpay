@@ -10,16 +10,16 @@ public class Constants {
     public static class Config {
 
         /* The payment brands for Ready-to-Use UI and Payment Button */
-        public static final Set<String> PAYMENT_BRANDS;
+        public static Set<String> PAYMENT_BRANDS;
 
         static {
             PAYMENT_BRANDS = new LinkedHashSet<>();
 
             PAYMENT_BRANDS.add("VISA");
             PAYMENT_BRANDS.add("MASTER");
-            //PAYMENT_BRANDS.add("AMEX");
-            //PAYMENT_BRANDS.add("DINERS");
-            //PAYMENT_BRANDS.add("DISCOVER");
+            PAYMENT_BRANDS.add("AMEX");
+            PAYMENT_BRANDS.add("DINERS");
+            PAYMENT_BRANDS.add("DISCOVER");
             //PAYMENT_BRANDS.add("ALIA");
             //PAYMENT_BRANDS.add("MAESTRO");
             //PAYMENT_BRANDS.add("PAYPAL");
